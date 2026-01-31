@@ -1,0 +1,59 @@
+[project]
+name = "fsds-typed-python"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "josue",email = "jogat12@gmail.com"}
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi (>=0.128.0,<0.129.0)",
+    "pydantic (>=2.12.5,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "ruff (>=0.14.14,<0.15.0)",
+    "black (>=26.1.0,<27.0.0)",
+    "mypy (>=1.19.1,<2.0.0)",
+    "pytest (>=9.0.2,<10.0.0)",
+    "pytest-cov (>=7.0.0,<8.0.0)",
+    "types-requests (>=2.32.4.20260107,<3.0.0.0)"
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+fix = false
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = []
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_configs = true
+pretty = true
+show_error_codes = true
+mypy_path = "app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.poetry]
+name = "fsds-typed-python"
+version = "0.1.0"
+description = ""
+authors = []
+package-mode = false
