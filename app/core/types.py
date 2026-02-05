@@ -20,6 +20,7 @@ MAX_PERCENTAGE: Final[Percentage] = 100.0
 class BitcoinDailyCandle:
     date: date
     open: Decimal
+    high: Decimal
     low: Decimal
     close: Decimal
     volume: Decimal
