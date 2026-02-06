@@ -13,6 +13,7 @@ Percentage = float
 
 MAX_PERCENTAGE: Final[Percentage] = 100.0
 
+
 class RowType(str, Enum):
     A = "A"
     B = "B"
