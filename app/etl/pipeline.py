@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 
-from app.core.types import BitcoinDailyCandle
+from app.core.types.bitcoin import BitcoinDailyCandle
 from app.etl.schemas import RawBitcoinRow
 from app.etl.transformers import normalize_row
 

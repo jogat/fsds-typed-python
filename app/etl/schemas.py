@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.core.types import RowType
+from app.core.types.bitcoin import RowType
 
 
 class RawBitcoinRow(BaseModel):

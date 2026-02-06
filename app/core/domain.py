@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.core.types import MAX_PERCENTAGE, Percentage
+from app.core.misc import MAX_PERCENTAGE, Percentage
 
 
 @dataclass(frozen=True)

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from app.core.types import RowType
+from app.core.types.bitcoin import RowType
 from app.etl.loaders import (
     CsvIngestionError,
     load_bitcoin_csv_strict,

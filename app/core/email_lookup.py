@@ -1,4 +1,4 @@
-from app.core.types import Email, UserId
+from app.core.misc import Email, UserId
 
 
 def find_user_email(user_id: UserId) -> Email | None:
