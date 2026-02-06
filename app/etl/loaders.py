@@ -41,7 +41,7 @@ def load_bitcoin_csv_tolerant(path: Path) -> tuple[list[RawBitcoinRow], list[Row
     valid: list[RawBitcoinRow] = []
     errors: list[RowError] = []
 
-    with path.open("r", newline="", encoding="utf-8") as f:
+    with path.open("r", newline="", encoding="utf-8", errors="strict") as f:
         reader = csv.DictReader(f)
         # DictReader yields dict[str, str | None], but in practice values are str/None.
         for index, raw_row in enumerate(reader, start=2):

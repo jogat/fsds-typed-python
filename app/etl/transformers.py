@@ -15,4 +15,5 @@ def normalize_row(row: RawBitcoinRow) -> BitcoinDailyCandle:
         low=row.low,
         close=row.close,
         volume=row.volume,
+        type=row.type,
     )

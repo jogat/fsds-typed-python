@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
+from enum import Enum
 from typing import Final
 
 # ----------------------------
@@ -11,6 +12,11 @@ Email = str
 Percentage = float
 
 MAX_PERCENTAGE: Final[Percentage] = 100.0
+
+class RowType(str, Enum):
+    A = "A"
+    B = "B"
+    C = "C"
 
 
 # ----------------------------
@@ -24,3 +30,4 @@ class BitcoinDailyCandle:
     low: Decimal
     close: Decimal
     volume: Decimal
+    type: RowType | None
