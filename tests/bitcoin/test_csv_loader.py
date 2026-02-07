@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from app.core.types.bitcoin import RowType
+from app.core.types.bitcoin import CandleType
 from app.etl.loaders import (
     CsvIngestionError,
     load_bitcoin_csv_strict,
@@ -30,14 +30,14 @@ def test_load_bitcoin_csv_strict_success_and_type(tmp_path: Path) -> None:
     csv_path = tmp_path / "btc.csv"
     csv_path.write_text(
         "date,open,high,low,close,volume,type\n"
-        "2024-01-01,42000,43000,41000,42500,123.45,B\n",
+        "2024-01-01,42000,43000,41000,42500,123.45,spot\n",
         encoding="utf-8",
     )
 
     rows = load_bitcoin_csv_strict(csv_path)
     assert len(rows) == 1
     assert str(rows[0].date) == "2024-01-01"
-    assert rows[0].type == RowType.B
+    assert rows[0].type == CandleType.SPOT
 
 
 def test_load_bitcoin_csv_tolerant_collects_errors(tmp_path: Path) -> None:

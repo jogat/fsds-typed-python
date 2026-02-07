@@ -4,10 +4,9 @@ from decimal import Decimal
 from enum import Enum
 
 
-class RowType(str, Enum):
-    A = "A"
-    B = "B"
-    C = "C"
+class CandleType(str, Enum):
+    SPOT = "spot"
+    FEATURES = "features"
 
 
 @dataclass(frozen=True)
@@ -18,4 +17,4 @@ class BitcoinDailyCandle:
     low: Decimal
     close: Decimal
     volume: Decimal
-    type: RowType | None
+    type: CandleType | None

@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.core.types.bitcoin import RowType
+from app.core.types.bitcoin import CandleType
 
 
 class RawBitcoinRow(BaseModel):
@@ -14,18 +14,18 @@ class RawBitcoinRow(BaseModel):
     close: Decimal = Field(gt=0)
     volume: Decimal = Field(ge=0)
 
-    type: RowType = RowType.A
+    type: CandleType | None = None
 
     @field_validator("type", mode="before")
     @classmethod
     def normalize_type(cls, v: object) -> object:
         if v is None:
-            return RowType.A
-        if not isinstance(v, str):
-            return v
+            return None
 
-        s = v.strip()
-        if s == "":
-            return RowType.A
+        if isinstance(v, str):
+            s = v.strip().lower()
+            if s == "":
+                return None
+            return s
 
-        return s.upper()
+        return v

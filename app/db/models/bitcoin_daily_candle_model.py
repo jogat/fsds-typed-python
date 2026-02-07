@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 from decimal import Decimal
 
-from sqlalchemy import Date, Numeric
+from sqlalchemy import Date, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -23,3 +23,5 @@ class BitcoinDailyCandleModel(Base):
     close: Mapped[Decimal] = mapped_column(Numeric(20, 8), nullable=False)
 
     volume: Mapped[Decimal] = mapped_column(Numeric(28, 8), nullable=False)
+
+    type: Mapped[str | None] = mapped_column(String(length=1), nullable=True)
