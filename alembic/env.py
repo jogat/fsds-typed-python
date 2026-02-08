@@ -2,14 +2,17 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
 
+import app.db.models  # noqa: F401
+
+# IMPORTANT: import models so Base.metadata is populated
 from alembic import context
 from app.db.base import Base
 
-# IMPORTANT: import models so Base.metadata is populated
-from app.db.models.bitcoin_daily_candle_model import (
-    BitcoinDailyCandleModel,  # noqa: F401
-)
+assert Base.metadata.tables
 
+# from app.db.models.bitcoin_daily_candle_model import (
+#     BitcoinDailyCandleModel,
+# )
 # IMPORTANT: import models so Base.metadata is populated
 from app.settings.db import DatabaseSettings
 
@@ -35,7 +38,12 @@ target_metadata = Base.metadata
 
 
 def get_url() -> str:
-    # Use the same settings as the app
+    # Respect sqlalchemy.url passed in via alembic Config (tests/CI)
+    url = config.get_main_option("sqlalchemy.url")
+    if url:
+        return url
+
+    # Fallback for local runs if sqlalchemy.url is missing
     return DatabaseSettings().url
 
 
@@ -65,34 +73,34 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
+    # ✅ If tests inject a connection, we MUST use it.
+    connection = config.attributes.get("connection")
 
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
+    print("ALEMBIC injected connection?", connection is not None)
 
-    """
-    configuration = config.get_section(config.config_ini_section)
-    if configuration is None:
-        raise RuntimeError("Alembic configuration missing.")
+    if connection is not None:
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            compare_type=True,
+        )
+        with context.begin_transaction():
+            context.run_migrations()
+        return
 
-    configuration["sqlalchemy.url"] = get_url()
-
+    # Normal path (CLI usage)
+    configuration = config.get_section(config.config_ini_section) or {}
     connectable = engine_from_config(
         configuration,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
 
-    with connectable.connect() as connection:
+    with connectable.connect() as connection2:
         context.configure(
-            connection=connection, target_metadata=target_metadata, compare_type=True
+            connection=connection2,
+            target_metadata=target_metadata,
+            compare_type=True,
         )
-
         with context.begin_transaction():
             context.run_migrations()
-
-
-if context.is_offline_mode():
-    run_migrations_offline()
-else:
-    run_migrations_online()

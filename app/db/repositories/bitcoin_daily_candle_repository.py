@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import date
 
 from sqlalchemy import select
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from app.core.types.bitcoin import BitcoinDailyCandle, CandleType
@@ -41,12 +42,50 @@ class BitcoinDailyCandleRepository:
         self._session.add(_domain_to_model(candle))
 
     def get_by_date(
-        self, candle_date: date, candle_type: CandleType
+        self,
+        candle_date: date,
+        candle_type: CandleType | None = None,
     ) -> BitcoinDailyCandle | None:
-        statement = select(BitcoinDailyCandleModel).where(
+        stmt = select(BitcoinDailyCandleModel).where(
             BitcoinDailyCandleModel.date == candle_date,
-            BitcoinDailyCandleModel.type == candle_type.value,
         )
 
-        result = self._session.execute(statement).scalar_one_or_none()
+        if candle_type is None:
+            stmt = stmt.where(BitcoinDailyCandleModel.type.is_(None))
+        else:
+            stmt = stmt.where(BitcoinDailyCandleModel.type == candle_type.value)
+
+        result = self._session.execute(stmt).scalar_one_or_none()
         return None if result is None else _model_to_domain(result)
+
+    def list_range(
+        self,
+        start_date: date,
+        end_date: date,
+    ) -> list[BitcoinDailyCandle]:
+        stmt = (
+            select(BitcoinDailyCandleModel)
+            .where(BitcoinDailyCandleModel.date >= start_date)
+            .where(BitcoinDailyCandleModel.date <= end_date)
+            .order_by(BitcoinDailyCandleModel.date)
+        )
+
+        results = self._session.execute(stmt).scalars().all()
+        return [_model_to_domain(row) for row in results]
+
+    def add_or_ignore(self, candle: BitcoinDailyCandle) -> None:
+        stmt = (
+            sqlite_insert(BitcoinDailyCandleModel)
+            .values(
+                date=candle.date,
+                open=candle.open,
+                high=candle.high,
+                low=candle.low,
+                close=candle.close,
+                volume=candle.volume,
+                type=candle.type.value if candle.type else None,
+            )
+            .on_conflict_do_nothing(index_elements=["date"])
+        )
+
+        self._session.execute(stmt)
