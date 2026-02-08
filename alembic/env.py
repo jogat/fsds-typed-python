@@ -14,7 +14,7 @@ assert Base.metadata.tables
 #     BitcoinDailyCandleModel,
 # )
 # IMPORTANT: import models so Base.metadata is populated
-from app.settings.db import DatabaseSettings
+from app.settings.db import DatabaseSettings  # noqa: E402
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

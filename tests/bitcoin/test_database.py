@@ -28,8 +28,8 @@ def test_add_or_ignore_is_idempotent(session_factory) -> None:
         repo = BitcoinDailyCandleRepository(session)
         fetched = repo.get_by_date(date(2024, 1, 1))
 
-
     assert fetched == candle
+
 
 def test_add_or_ignore_is_idempotent_with_type(session_factory) -> None:
     candle = BitcoinDailyCandle(
@@ -50,6 +50,5 @@ def test_add_or_ignore_is_idempotent_with_type(session_factory) -> None:
     with session_scope(session_factory) as session:
         repo = BitcoinDailyCandleRepository(session)
         fetched = repo.get_by_date(date(2024, 1, 1), CandleType.SPOT)
-
 
     assert fetched == candle
