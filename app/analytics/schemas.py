@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 from decimal import Decimal
 
 
@@ -22,3 +23,12 @@ class ReturnSummary:
     mean_daily_return: float
     volatility: float
     observation_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class BitcoinAnalyticsReport:
+    start_date: date
+    end_date: date
+    price: PriceSummary
+    volume: VolumeSummary
+    returns: ReturnSummary

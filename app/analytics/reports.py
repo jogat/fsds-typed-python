@@ -12,7 +12,12 @@ from app.analytics.metrics import (
     total_volume,
     volatility,
 )
-from app.analytics.schemas import PriceSummary, ReturnSummary, VolumeSummary
+from app.analytics.schemas import (
+    BitcoinAnalyticsReport,
+    PriceSummary,
+    ReturnSummary,
+    VolumeSummary,
+)
 from app.core.types.bitcoin import BitcoinDailyCandle
 
 
@@ -44,4 +49,21 @@ def build_return_summary(candles: Sequence[BitcoinDailyCandle]) -> ReturnSummary
         mean_daily_return=mean_returns,
         volatility=vol,
         observation_count=len(returns),
+    )
+
+
+def build_bitcoin_analytics_report(
+    candles: Sequence[BitcoinDailyCandle],
+) -> BitcoinAnalyticsReport:
+    if not candles:
+        raise ValueError("At least one candle is required")
+
+    ordered = sorted(candles, key=lambda c: c.date)
+
+    return BitcoinAnalyticsReport(
+        start_date=ordered[0].date,
+        end_date=ordered[-1].date,
+        price=build_price_summary(ordered),
+        volume=build_volume_summary(ordered),
+        returns=build_return_summary(ordered),
     )
