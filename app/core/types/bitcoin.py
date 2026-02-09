@@ -17,4 +17,4 @@ class BitcoinDailyCandle:
     low: Decimal
     close: Decimal
     volume: Decimal
-    type: CandleType | None
+    type: CandleType | None = None
